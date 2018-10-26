@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -18,11 +19,14 @@ public class ListFiles {
       listFiles.listAllFiles(folder);
       System.out.println("-------------------------------------------------");
       System.out.println("reading files Java8 - Using Files.walk() method");
-      listFiles.listAllFiles("G:\\Test");
+      try {
+		listFiles.listAllFiles("G:\\Test");
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 
      }
-
-	private String[] filesInPath;
      // Uses listFiles method  
      public void listAllFiles(File folder){
          System.out.println("In listAllfiles(File) method");
@@ -42,33 +46,22 @@ public class ListFiles {
              }
          }
      }
+
      // Uses Files.walk method   
-     public void listAllFiles(String path){
+     public static List<String> listAllFiles(String path) throws IOException{
          System.out.println("In listAllfiles(String path) method");
          System.out.println("Working with " + path);
-         int i = 1;
-         try(Stream<Path> paths = Files.walk(Paths.get(path))) {
-             paths.forEach(filePath -> {
-                 if (Files.isRegularFile(filePath)) {
-                     try {
-                    	 System.out.println(filePath);
-                    	 //this.filesInPath[i] = filePath.toString();
-//                    	 i=i+1;
-//                         readContent(filePath);
-                     } catch (Exception e) {
-                         // TODO Auto-generated catch block
-                         e.printStackTrace();
-                     }
-                 }
-             });
-         } catch (IOException e) {
-             // TODO Auto-generated catch block
-             e.printStackTrace();
-         } 
+         Stream<Path> paths = Files.walk(Paths.get(path));         
+         List<String> filesFound = new ArrayList<String>();
+         paths.forEach(filePath->{
+//        	 if (Files.isRegularFile(filePath)){
+        		 String temp = filePath.toString();
+        		 filesFound.add(temp);
+//        	 }
+         });     
+         return filesFound;      
      }
-     public String getFileNames(int i) {
-    	 return this.filesInPath[i];
-     }
+ 
      
      public void readContent(File file) throws IOException{
          System.out.println("read file " + file.getCanonicalPath() );
@@ -87,5 +80,4 @@ public class ListFiles {
          List<String> fileList = Files.readAllLines(filePath);
          System.out.println("" + fileList);
      }
-     
 }
